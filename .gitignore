@@ -1,0 +1,14 @@
+node_modules/
+.next/
+.env.local
+*.eps
+*.JPG
+*.jpg
+tmp_*.json
+tokens.json
+opencode.json
+8621.eps
+8622.jpg
+IMG-20231015-WA0002.jpg
+web.JPG
+README.md

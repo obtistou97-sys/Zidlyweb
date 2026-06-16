@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1220"/>
+      <stop offset="100%" stop-color="#0F1A2E"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="80" y="80" width="1040" height="470" rx="24" fill="none" stroke="url(#accent)" stroke-width="2" opacity="0.3"/>
+  <text x="600" y="280" font-family="Arial,sans-serif" font-size="72" font-weight="bold" fill="#FFFFFF" text-anchor="middle">Oussama Brahimi</text>
+  <text x="600" y="360" font-family="Arial,sans-serif" font-size="36" fill="#94A3B8" text-anchor="middle">Freelance Web Developer</text>
+  <rect x="460" y="400" width="280" height="4" rx="2" fill="url(#accent)"/>
+  <text x="600" y="450" font-family="Arial,sans-serif" font-size="24" fill="#64748B" text-anchor="middle">oussama.dev</text>
+</svg>
