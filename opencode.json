@@ -1,0 +1,13 @@
+{
+  "mcp": {
+    "novamira": {
+      "type": "local",
+      "command": ["npx", "-y", "@automattic/mcp-wordpress-remote@latest"],
+      "environment": {
+        "WP_API_URL": "https://greenyellow-shark-286669.hostingersite.com/wp-json/mcp/novamira",
+        "WP_API_USERNAME": "kingstou97@gmail.com",
+        "WP_API_PASSWORD": "77uCXyF0N9fRrIqPfsR5rzUa"
+      }
+    }
+  }
+}

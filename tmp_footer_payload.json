@@ -1,0 +1,8 @@
+{
+  "meta": {
+    "_elementor_data": "{\"content\":[{\"id\":\"ftr-cont\",\"elType\":\"container\",\"settings\":{\"flex_direction\":\"row\",\"justify_content\":\"space-between\",\"align_items\":\"center\",\"padding\":{\"unit\":\"px\",\"top\":20,\"right\":30,\"bottom\":20,\"left\":30},\"background_background\":\"classic\",\"background_color\":\"#0B1220\",\"content_width\":\"full\"},\"elements\":[{\"id\":\"ftr-text\",\"elType\":\"widget\",\"widgetType\":\"text-editor\",\"settings\":{\"text_color\":\"#94A3B8\",\"editor\":\"<p>© 2026 ZidWeb Studio. All rights reserved.</p>\"}}]}]}",
+    "_elementor_edit_mode": "builder",
+    "_elementor_template_type": "xpro-themer",
+    "_elementor_version": "3.27.0"
+  }
+}
