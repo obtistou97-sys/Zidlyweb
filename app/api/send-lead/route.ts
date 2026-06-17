@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 
 export async function POST(req: Request) {
   try {
-    const { name, email, whatsapp, business, details } = await req.json();
+    const { name, email, whatsapp, business, details, plan } = await req.json();
 
     const html = `
       <h2>🔔 New Lead from ZidlyWeb</h2>
@@ -20,6 +20,7 @@ export async function POST(req: Request) {
         <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Email</td><td style="padding:8px;border:1px solid #ddd">${email}</td></tr>
         <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">WhatsApp</td><td style="padding:8px;border:1px solid #ddd">${whatsapp}</td></tr>
         <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Business</td><td style="padding:8px;border:1px solid #ddd">${business || "—"}</td></tr>
+        <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Selected Plan</td><td style="padding:8px;border:1px solid #ddd">${plan || "—"}</td></tr>
         <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Details</td><td style="padding:8px;border:1px solid #ddd">${details}</td></tr>
       </table>
     `;

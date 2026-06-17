@@ -84,13 +84,13 @@ function FAQAccordion({ items }: { items: readonly { q: string; a: string }[] })
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.08 }}
-            className="overflow-hidden rounded-2xl border border-zinc-800/60 bg-zinc-900/40 backdrop-blur-sm"
+            className="overflow-hidden rounded-2xl border border-zinc-800/60 bg-zinc-900/40 backdrop-blur-sm transition-colors hover:border-primary/30"
           >
             <button
               onClick={() => setOpenIndex(isOpen ? null : i)}
-              className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
+              className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left transition-colors hover:bg-primary/5"
             >
-              <span className="text-sm font-medium text-zinc-200 sm:text-base">
+              <span className="text-sm font-medium text-zinc-200 transition-colors group-hover:text-primary sm:text-base">
                 {faq.q}
               </span>
               <motion.span
@@ -213,13 +213,13 @@ function ProcessPanel({ t }: { t: TranslationShape }) {
           <motion.div
             key={step.title}
             variants={itemVariants}
-            className="relative flex gap-5 sm:items-start"
+            className="relative flex gap-5 sm:items-start group"
           >
-            <span className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-zinc-700/60 bg-zinc-900 text-sm font-bold text-primary shadow-lg shadow-primary/5">
+            <span className="relative z-10 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-zinc-700/60 bg-zinc-900 text-sm font-bold text-primary shadow-lg shadow-primary/5 transition-colors group-hover:border-primary/40 group-hover:bg-primary/10">
               {String(i + 1).padStart(2, "0")}
             </span>
             <div className="min-w-0 pt-1.5">
-              <h3 className="text-base font-semibold text-zinc-100">
+              <h3 className="text-base font-semibold text-zinc-100 transition-colors group-hover:text-primary">
                 {step.title}
               </h3>
               <p className="mt-1 text-sm leading-relaxed text-zinc-400">
@@ -282,6 +282,17 @@ function FAQPanel({ t }: { t: TranslationShape }) {
 }
 
 function PricingPanel({ t }: { t: TranslationShape }) {
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
+  function isHighlighted(i: number) {
+    if (selectedIndex === i) return true;
+    if (selectedIndex === null) {
+      const plan = t.pricing.plans[i];
+      return "featured" in plan && plan.featured;
+    }
+    return false;
+  }
+
   return (
     <motion.div
       variants={containerVariants}
@@ -294,14 +305,14 @@ function PricingPanel({ t }: { t: TranslationShape }) {
           key={plan.name}
           variants={itemVariants}
           className={`relative flex flex-col rounded-2xl border p-6 backdrop-blur-sm transition-colors ${
-            "featured" in plan && plan.featured
+            isHighlighted(i)
               ? "border-primary/40 bg-primary/10 shadow-lg shadow-primary/10"
               : "border-zinc-800/50 bg-zinc-900/40 hover:border-primary/30"
           }`}
         >
-          {"featured" in plan && plan.featured && (
-            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-xs font-semibold text-white">
-              Popular
+          {isHighlighted(i) && (
+            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-xs font-semibold text-white whitespace-nowrap">
+              {selectedIndex === i ? "Selected" : "Popular"}
             </span>
           )}
           <h3 className="text-lg font-bold text-zinc-100">{plan.name}</h3>
@@ -316,9 +327,10 @@ function PricingPanel({ t }: { t: TranslationShape }) {
             ))}
           </ul>
           <a
-            href="#contact"
+            href={`#contact?plan=${encodeURIComponent(plan.name)}`}
+            onClick={() => setSelectedIndex(i)}
             className={`mt-6 inline-flex items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold transition-all ${
-              "featured" in plan && plan.featured
+              isHighlighted(i)
                 ? "bg-primary text-white hover:opacity-90"
                 : "border border-zinc-700 text-zinc-200 hover:border-primary/40 hover:text-primary"
             }`}

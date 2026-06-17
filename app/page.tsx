@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { useLanguage } from "./providers";
 import InteractiveShowcase from "./InteractiveShowcase";
+import WebsiteShowcase from "./WebsiteShowcase";
 import AnimatedHeroText from "./AnimatedHeroText";
 
 const fadeUp = {
@@ -51,9 +52,19 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 
 function GradientBlob({ className }: { className?: string }) {
   return (
-    <div
+    <motion.div
       aria-hidden
-      className={`pointer-events-none absolute rounded-full blur-3xl opacity-25 ${className}`}
+      animate={{
+        y: [0, -20, 0],
+        scale: [1, 1.05, 1],
+        opacity: [0.25, 0.35, 0.25],
+      }}
+      transition={{
+        duration: 6,
+        ease: "easeInOut",
+        repeat: Infinity,
+      }}
+      className={`pointer-events-none absolute rounded-full blur-3xl ${className}`}
       style={{
         background:
           "radial-gradient(circle at 30% 30%, #CC3366, transparent 60%)",
@@ -160,6 +171,43 @@ function WhatsAppButton() {
   );
 }
 
+function CountUp({ value, className }: { value: string; className?: string }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLSpanElement>(null);
+  const [hasAnimated, setHasAnimated] = useState(false);
+
+  const num = parseInt(value.replace(/[^0-9]/g, ""), 10);
+  const suffix = value.replace(/[0-9]/g, "");
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || hasAnimated) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasAnimated(true);
+          const duration = 1500;
+          const start = performance.now();
+          function tick(now: number) {
+            const elapsed = now - start;
+            const progress = Math.min(elapsed / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setCount(Math.round(eased * num));
+            if (progress < 1) requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [num, hasAnimated]);
+
+  return <span ref={ref} className={className}>{count}{suffix}</span>;
+}
+
 export default function Home() {
   const { t, dir, locale } = useLanguage();
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -169,7 +217,17 @@ export default function Home() {
   const prevScrollY = useRef(0);
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [formState, handleSubmit] = useForm("mzdqyyev");
+  const [selectedPlan, setSelectedPlan] = useState("");
   const pendingLead = useRef<Record<string, string> | null>(null);
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash.includes("?")) {
+      const params = new URLSearchParams(hash.split("?")[1]);
+      const plan = params.get("plan");
+      if (plan) setSelectedPlan(plan);
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -232,9 +290,12 @@ export default function Home() {
   }, []);
 
   return (
-    <main
+    <motion.main
       dir={dir}
-      className="relative overflow-x-hidden bg-white text-[#1E293B] dark:bg-black dark:text-white antialiased"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="relative overflow-x-hidden bg-white text-[#1E293B] antialiased"
     >
       <header
         className={`fixed top-0 left-0 z-50 w-full transition-all duration-300 ${
@@ -324,21 +385,20 @@ export default function Home() {
         id="top"
         className="relative isolate overflow-hidden"
       >
-        <video
+        <motion.video
           autoPlay
           muted
           loop
           playsInline
+          initial={{ scale: 1.1 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 8, ease: [0.22, 1, 0.36, 1] }}
           className="absolute inset-0 h-full w-full object-cover"
         >
           <source src="/hero-bg.mp4" type="video/mp4" />
-        </video>
+        </motion.video>
 
         <div className="absolute inset-0 bg-black/60" />
-        <div
-          aria-hidden
-          className="absolute inset-0 [background-image:linear-gradient(to_right,rgba(204,51,102,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(204,51,102,0.06)_1px,transparent_1px)] [background-size:48px_48px]"
-        />
         <GradientBlob className="-top-32 -left-32 h-96 w-96 rtl:-right-32 rtl:left-auto" />
         <GradientBlob className="top-1/3 -right-32 h-96 w-96 opacity-15 rtl:-left-32 rtl:right-auto" />
 
@@ -362,21 +422,37 @@ export default function Home() {
 
             <AnimatedHeroText />
 
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <a
+            <motion.div
+              initial="hidden"
+              animate="show"
+              variants={{
+                hidden: {},
+                show: { transition: { staggerChildren: 0.12, delayChildren: 0.8 } },
+              }}
+              className="mt-8 flex flex-wrap justify-center gap-4"
+            >
+              <motion.a
                 href="#contact"
-                className="inline-flex items-center gap-2 rounded-sm bg-primary px-7 py-3.5 text-sm font-semibold text-white transition-all hover:opacity-90"
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+                }}
+                className="inline-flex items-center gap-2 rounded-sm bg-primary px-7 py-3.5 text-sm font-semibold text-white transition-all hover:opacity-90 hover:shadow-lg hover:shadow-primary/30"
               >
                 {t.hero.ctaPrimary}
                 <ArrowRight className="h-4 w-4 rtl:rotate-180" />
-              </a>
-              <a
+              </motion.a>
+              <motion.a
                 href="#work"
-                className="inline-flex items-center gap-2 rounded-sm border border-white/30 px-7 py-3.5 text-sm font-semibold text-white/80 transition-all hover:border-white/60 hover:text-white"
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+                }}
+                className="inline-flex items-center gap-2 rounded-sm border border-white/30 px-7 py-3.5 text-sm font-semibold text-white/80 transition-all hover:border-white/60 hover:text-white hover:shadow-lg hover:shadow-white/10"
               >
                 {t.hero.ctaSecondary}
-              </a>
-            </div>
+              </motion.a>
+            </motion.div>
 
             <div className="mt-12 grid grid-cols-3 gap-6 border-t border-white/10 pt-8">
               {t.hero.stats.map((stat, i) => (
@@ -387,7 +463,9 @@ export default function Home() {
                   custom={i + 2}
                   variants={fadeUp}
                 >
-                  <p className="text-2xl font-bold text-white sm:text-3xl">{stat.value}</p>
+                  <p className="text-2xl font-bold text-white sm:text-3xl">
+                    <CountUp value={stat.value} />
+                  </p>
                   <p className="mt-1 text-sm text-white/60">{stat.label}</p>
                 </motion.div>
               ))}
@@ -419,9 +497,15 @@ export default function Home() {
 
       <section className="relative overflow-hidden border-y border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-black/50 py-12">
         <div className="mx-auto max-w-7xl px-6 lg:px-12">
-          <p className="mb-10 text-center text-sm font-semibold uppercase tracking-widest text-slate-500 dark:text-text-muted">
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="mb-10 text-center text-sm font-semibold uppercase tracking-widest text-slate-500 dark:text-text-muted"
+          >
             {t.trustBadges.title}
-          </p>
+          </motion.p>
         </div>
         <div className="relative flex overflow-hidden" style={{ maskImage: "linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)", WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)" }}>
           <motion.div
@@ -555,45 +639,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative py-24 lg:py-32">
-        <div className="mx-auto max-w-5xl px-6 lg:px-12">
-          <motion.div
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={fadeUp}
-            className="relative overflow-hidden rounded-sm bg-gradient-to-br from-primary to-[#802080] px-8 py-16 text-center shadow-2xl shadow-primary/20 sm:px-16"
-          >
-            <div
-              aria-hidden
-              className="absolute inset-0 [background-image:linear-gradient(to_right,rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:40px_40px]"
-            />
-            <div className="relative">
-              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl font-display">
-                {t.finalCta.headline}
-              </h2>
-              <p className="mx-auto mt-4 max-w-xl text-lg text-white/80">
-                {t.finalCta.text}
-              </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
-                <a
-                  href="#contact"
-                  className="inline-flex items-center gap-2 rounded-sm bg-white px-7 py-3.5 text-sm font-semibold text-primary shadow-lg transition-all hover:opacity-90"
-                >
-                  {t.finalCta.ctaPrimary}
-                  <ArrowRight className="h-4 w-4 rtl:rotate-180" />
-                </a>
-                <a
-                  href="#work"
-                  className="inline-flex items-center gap-2 rounded-sm border border-white/30 bg-white/10 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/20"
-                >
-                  {t.finalCta.ctaSecondary}
-                </a>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      <WebsiteShowcase t={t} />
 
       <section className="relative isolate overflow-hidden">
         <video
@@ -657,7 +703,7 @@ export default function Home() {
                   </div>
                 </a>
 
-                <div className="flex items-center gap-4 rounded-sm border border-white/10 bg-transparent p-4">
+                <div className="flex items-center gap-4 rounded-sm border border-white/10 bg-transparent p-4 transition-colors hover:border-white/30">
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sm bg-white/10 text-white/60">
                     <MapPin className="h-5 w-5" />
                   </span>
@@ -695,9 +741,11 @@ export default function Home() {
                       whatsapp: fd.get("whatsapp") as string,
                       business: (fd.get("business") as string) || "",
                       details: fd.get("details") as string,
+                      plan: (fd.get("plan") as string) || "",
                     };
                     handleSubmit(e);
                   }} className="space-y-6">
+                    <input type="hidden" name="plan" value={selectedPlan} />
                     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                       <div>
                         <label htmlFor="name" className="mb-2 block text-sm font-semibold text-white">{t.contact.form.nameLabel}</label>
@@ -772,9 +820,15 @@ export default function Home() {
       </div>
       </section>
 
-        <footer className="relative z-10 border-t border-white/10 py-10">
+        <motion.footer
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="relative z-10 border-t border-white/10 py-10"
+        >
           <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 sm:flex-row lg:px-12">
-            <a href="#top" className="flex items-center gap-2 font-bold text-white">
+            <a href="#top" className="flex items-center gap-2 font-bold text-white transition-opacity hover:opacity-80">
               <svg viewBox="0 0 48 48" className="h-12 w-auto sm:h-14" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect width="48" height="48" rx="10" fill="url(#logoGrad)" />
                 <text x="50%" y="50%" dominantBaseline="central" textAnchor="middle" fill="white" fontSize="26" fontWeight="800" fontFamily="system-ui">Z</text>
@@ -798,10 +852,10 @@ export default function Home() {
               </p>
             </div>
           </div>
-        </footer>
+        </motion.footer>
       </section>
 
       <WhatsAppButton />
-    </main>
+    </motion.main>
   );
 }
