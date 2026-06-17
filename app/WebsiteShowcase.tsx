@@ -26,10 +26,10 @@ interface DesktopPos {
 }
 
 const desktopPositions: DesktopPos[] = [
-  { left: "10%", top: "10px", zIndex: 30, width: "340px", initX: 0, initY: 0, rotate: 0, floatY: [0, -10, 0], floatRotate: [0, 0.5, 0], delay: 0 },
-  { left: "28%", top: "0px", zIndex: 40, width: "420px", initX: 0, initY: 0, rotate: 0, floatY: [0, 8, 0], floatRotate: [-3, -2, -3], delay: 0.25 },
-  { left: "50%", top: "20px", zIndex: 25, width: "370px", initX: 0, initY: 0, rotate: 0, floatY: [0, -7, 0], floatRotate: [2.5, 3.5, 2.5], delay: 0.5 },
-  { left: "68%", top: "65px", zIndex: 15, width: "310px", initX: 0, initY: 0, rotate: 0, floatY: [0, 6, 0], floatRotate: [-1.5, -0.5, -1.5], delay: 0.75 },
+  { left: "50%", top: "0px", zIndex: 40, width: "440px", initX: 0, initY: 0, rotate: 0, floatY: [0, -10, 0], floatRotate: [0, 0.5, 0], delay: 0 },
+  { left: "20%", top: "-10px", zIndex: 30, width: "360px", initX: -20, initY: 10, rotate: -3, floatY: [0, 8, 0], floatRotate: [-3, -2, -3], delay: 0.25 },
+  { left: "56%", top: "25px", zIndex: 20, width: "360px", initX: 20, initY: 15, rotate: 2.5, floatY: [0, -7, 0], floatRotate: [2.5, 3.5, 2.5], delay: 0.5 },
+  { left: "36%", top: "70px", zIndex: 10, width: "310px", initX: 0, initY: 20, rotate: -1.5, floatY: [0, 6, 0], floatRotate: [-1.5, -0.5, -1.5], delay: 0.75 },
 ];
 
 const IMG = {
@@ -94,7 +94,7 @@ const mockupData: MockupItem[] = [
           ))}
         </div>
         <div className="grid grid-cols-2 gap-2">
-          {[{ img: IMG.prod1, name: "Headphones", price: "$79" }, { img: IMG.prod2, name: "Smart Watch", price: "$249" }, { img: IMG.prod3, name: "Sneakers", price: "$129" }, { img: IMG.prod4, name: "Camera", price: "$449" }].map((p, i) => (
+          {[{ img: IMG.prod1, name: "Wireless Headphones", price: "$79" }, { img: IMG.prod2, name: "Smart Watch", price: "$249" }, { img: IMG.prod3, name: "Sneakers", price: "$129" }, { img: IMG.prod4, name: "Camera", price: "$449" }].map((p, i) => (
             <div key={i} className="overflow-hidden rounded-lg bg-white/5">
               <div className="aspect-square w-full bg-cover bg-center" style={{ backgroundImage: `url(${p.img})` }} />
               <div className="p-2">
@@ -155,7 +155,7 @@ const mockupData: MockupItem[] = [
     label: "Business",
     domain: "yourbusiness.com",
     gradient: "from-primary to-pink-600",
-    content: (expanded) => (
+    content: () => (
       <div className="space-y-3 p-3 sm:p-4">
         <div className="flex items-center gap-2">
           <span className="rounded bg-primary/20 px-2 py-0.5 text-[10px] font-medium text-primary-300">Premium</span>
@@ -287,7 +287,7 @@ export default function WebsiteShowcase({ t }: { t: TranslationShape }) {
                 <motion.div
                   key={mockup.label}
                   className="absolute cursor-pointer"
-                  style={{ left: pos.left, top: pos.top, zIndex: pos.zIndex, width: pos.width }}
+                  style={{ left: pos.left, top: pos.top, zIndex: pos.zIndex, width: pos.width, transform: `translateX(${i === 0 ? "-50%" : "0"})` }}
                   initial={{ opacity: 0, x: pos.initX, y: pos.initY }}
                   whileInView={{ opacity: 1, x: 0, y: 0 }}
                   viewport={{ once: true, margin: "-30px" }}
