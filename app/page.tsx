@@ -20,13 +20,11 @@ import {
   Send,
   Loader2,
   Quote,
-  Sun,
-  Moon,
   Languages,
   Menu,
   X,
 } from "lucide-react";
-import { useLanguage, useTheme } from "./providers";
+import { useLanguage } from "./providers";
 import InteractiveShowcase from "./InteractiveShowcase";
 import AnimatedHeroText from "./AnimatedHeroText";
 
@@ -125,25 +123,6 @@ function HeroImage() {
         </div>
       </div>
     </motion.div>
-  );
-}
-
-function ThemeToggle({ light }: { light?: boolean }) {
-  const { theme, toggleTheme } = useTheme();
-  return (
-    <button
-      onClick={toggleTheme}
-      aria-label={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
-      className={`transition-colors ${
-        light ? "text-white/70 hover:text-white" : "text-slate-500 hover:text-[#1E293B]"
-      }`}
-    >
-      {theme === "light" ? (
-        <Moon className="h-[18px] w-[18px]" />
-      ) : (
-        <Sun className="h-[18px] w-[18px]" />
-      )}
-    </button>
   );
 }
 
@@ -289,12 +268,12 @@ export default function Home() {
             <a href="#work" className="transition-colors hover:text-primary">{t.nav.work}</a>
             <a href="#process" className="transition-colors hover:text-primary">{t.nav.process}</a>
             <a href="#testimonials" className="transition-colors hover:text-primary">{t.nav.testimonials}</a>
+            <a href="#pricing" className="transition-colors hover:text-primary">{t.nav.pricing}</a>
             <a href="#faq" className="transition-colors hover:text-primary">{t.nav.faq}</a>
           </div>
 
           <div className="hidden items-center gap-3 lg:flex">
             <LanguageToggle light={!scrolled} />
-            <ThemeToggle light={!scrolled} />
             <a
               href="#contact"
               className="inline-flex items-center rounded-sm bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-all hover:opacity-90"
@@ -304,7 +283,6 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-2 lg:hidden">
-            <ThemeToggle light={!scrolled} />
             <LanguageToggle light={!scrolled} />
             <button
               onClick={() => setMobileMenuOpen((v) => !v)}
@@ -330,11 +308,12 @@ export default function Home() {
             <div className={`flex flex-col gap-4 text-sm font-medium ${
               scrolled ? "text-slate-600" : "text-white/70"
             }`}>
-              <a href="#services" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary">{t.nav.services}</a>
-              <a href="#work" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary">{t.nav.work}</a>
-              <a href="#process" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary">{t.nav.process}</a>
-              <a href="#testimonials" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary">{t.nav.testimonials}</a>
-              <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary">{t.nav.faq}</a>
+<a href="#services" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary">{t.nav.services}</a>
+<a href="#work" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary">{t.nav.work}</a>
+<a href="#process" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary">{t.nav.process}</a>
+<a href="#testimonials" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary">{t.nav.testimonials}</a>
+<a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary">{t.nav.pricing}</a>
+<a href="#faq" onClick={() => setMobileMenuOpen(false)} className="hover:text-primary">{t.nav.faq}</a>
               <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="mt-2 inline-flex justify-center rounded-sm bg-primary px-5 py-2.5 text-sm font-semibold text-white">{t.nav.cta}</a>
             </div>
           </div>
@@ -463,6 +442,12 @@ export default function Home() {
         </div>
       </section>
 
+      <span id="services" />
+      <span id="work" />
+      <span id="process" />
+      <span id="testimonials" />
+      <span id="faq" />
+      <span id="pricing" />
       <InteractiveShowcase t={t} locale={locale} />
 
       <section id="about-section" className="relative py-24 lg:py-32">

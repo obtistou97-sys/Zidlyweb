@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import {
   Globe,
@@ -11,6 +11,7 @@ import {
   ArrowRight,
   ChevronDown,
   Star,
+  Check,
 } from "lucide-react";
 import { TranslationShape } from "./translations";
 
@@ -52,6 +53,7 @@ const TABS = [
   { key: "work", labelKey: "work" as const },
   { key: "process", labelKey: "process" as const },
   { key: "testimonials", labelKey: "testimonials" as const },
+  { key: "pricing", labelKey: "pricing" as const },
   { key: "faq", labelKey: "faq" as const },
 ];
 
@@ -279,11 +281,62 @@ function FAQPanel({ t }: { t: TranslationShape }) {
   );
 }
 
+function PricingPanel({ t }: { t: TranslationShape }) {
+  return (
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="show"
+      className="grid grid-cols-1 gap-5 md:grid-cols-3"
+    >
+      {t.pricing.plans.map((plan, i) => (
+        <motion.div
+          key={plan.name}
+          variants={itemVariants}
+          className={`relative flex flex-col rounded-2xl border p-6 backdrop-blur-sm transition-colors ${
+            "featured" in plan && plan.featured
+              ? "border-primary/40 bg-primary/10 shadow-lg shadow-primary/10"
+              : "border-zinc-800/50 bg-zinc-900/40 hover:border-primary/30"
+          }`}
+        >
+          {"featured" in plan && plan.featured && (
+            <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-xs font-semibold text-white">
+              Popular
+            </span>
+          )}
+          <h3 className="text-lg font-bold text-zinc-100">{plan.name}</h3>
+          <p className="mt-1 text-2xl font-bold text-primary">{plan.price}</p>
+          <p className="mt-2 text-sm text-zinc-400">{plan.desc}</p>
+          <ul className="mt-5 flex-1 space-y-2.5">
+            {plan.features.map((f) => (
+              <li key={f} className="flex items-start gap-2 text-sm text-zinc-300">
+                <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                {f}
+              </li>
+            ))}
+          </ul>
+          <a
+            href="#contact"
+            className={`mt-6 inline-flex items-center justify-center rounded-lg px-4 py-2.5 text-sm font-semibold transition-all ${
+              "featured" in plan && plan.featured
+                ? "bg-primary text-white hover:opacity-90"
+                : "border border-zinc-700 text-zinc-200 hover:border-primary/40 hover:text-primary"
+            }`}
+          >
+            {plan.cta}
+          </a>
+        </motion.div>
+      ))}
+    </motion.div>
+  );
+}
+
 const panelComponents = [
   ServicesPanel,
   ProjectsPanel,
   ProcessPanel,
   TestimonialsPanel,
+  PricingPanel,
   FAQPanel,
 ];
 
@@ -295,6 +348,21 @@ export default function InteractiveShowcase({
   locale: string;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      const idx = TABS.findIndex((t) => t.key === hash);
+      if (idx >= 0) setActiveIndex(idx);
+    }
+    const onHash = () => {
+      const h = window.location.hash.slice(1);
+      const idx = TABS.findIndex((t) => t.key === h);
+      if (idx >= 0) setActiveIndex(idx);
+    };
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
 
   const ActivePanel = panelComponents[activeIndex];
 

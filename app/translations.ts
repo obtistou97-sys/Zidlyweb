@@ -8,6 +8,7 @@ export const translations = {
       process: "Process",
       testimonials: "Testimonials",
       faq: "FAQ",
+      pricing: "Pricing",
       cta: "Let's Talk",
     },
     hero: {
@@ -256,6 +257,58 @@ export const translations = {
     footer: {
       rights: "All rights reserved.",
     },
+    pricing: {
+      badge: "Simple Pricing",
+      heading: "Choose Your Plan",
+      subheading: "No hidden fees, no surprises. Pick the plan that fits your needs.",
+      plans: [
+        {
+          name: "Starter",
+          price: "From $149",
+          desc: "Perfect for personal sites, freelancers, and small projects.",
+          features: [
+            "1-page responsive website",
+            "Custom domain setup",
+            "Contact form integration",
+            "Basic SEO optimization",
+            "Mobile-friendly design",
+            "3 days delivery",
+          ],
+          cta: "Get Started",
+        },
+        {
+          name: "Business",
+          price: "From $349",
+          desc: "Ideal for growing businesses that need a strong online presence.",
+          featured: true,
+          features: [
+            "Up to 5 pages",
+            "CMS integration (WordPress)",
+            "Advanced SEO setup",
+            "Social media integration",
+            "WhatsApp & contact forms",
+            "Google Analytics setup",
+            "7 days delivery",
+          ],
+          cta: "Start Business",
+        },
+        {
+          name: "E-commerce",
+          price: "From $699",
+          desc: "For online stores and custom e-commerce solutions.",
+          features: [
+            "Product catalog (unlimited items)",
+            "Shopping cart & checkout",
+            "Payment gateway integration",
+            "Order management dashboard",
+            "Inventory tracking",
+            "SEO for product pages",
+            "14 days delivery",
+          ],
+          cta: "Contact Us",
+        },
+      ],
+    },
   },
   ar: {
     nav: {
@@ -264,6 +317,7 @@ export const translations = {
       process: "آلية العمل",
       testimonials: "آراء العملاء",
       faq: "الأسئلة الشائعة",
+      pricing: "التسعير",
       cta: "تواصل معنا",
     },
     hero: {
@@ -511,6 +565,58 @@ export const translations = {
     },
     footer: {
       rights: "جميع الحقوق محفوظة.",
+    },
+    pricing: {
+      badge: "تسعير بسيط",
+      heading: "اختر الباقة المناسبة",
+      subheading: "لا رسوم خفية ولا مفاجآت. اختر الباقة التي تناسب احتياجاتك.",
+      plans: [
+        {
+          name: "ابتدائية",
+          price: "من $149",
+          desc: "مناسبة للمواقع الشخصية والمستقلين والمشاريع الصغيرة.",
+          features: [
+            "موقع صفحة واحدة متجاوب",
+            "إعداد نطاق مخصص",
+            "دمج نموذج تواصل",
+            "تحسين محركات بحث أساسي",
+            "تصميم متوافق مع الجوال",
+            "تسليم خلال 3 أيام",
+          ],
+          cta: "ابدأ الآن",
+        },
+        {
+          name: "تجارية",
+          price: "من $349",
+          desc: "مثالية للشركات المتنامية التي تحتاج حضوراً رقمياً قوياً.",
+          featured: true,
+          features: [
+            "حتى 5 صفحات",
+            "نظام إدارة محتوى (WordPress)",
+            "تحسين محركات بحث متقدم",
+            "دمج وسائل التواصل الاجتماعي",
+            "نماذج واتساب وتواصل",
+            "إعداد Google Analytics",
+            "تسليم خلال 7 أيام",
+          ],
+          cta: "ابدأ مشوارك",
+        },
+        {
+          name: "متجر إلكتروني",
+          price: "من $699",
+          desc: "للمتاجر الإلكترونية وحلول التجارة الإلكترونية المخصصة.",
+          features: [
+            "كتالوج منتجات (غير محدود)",
+            "سلة تسوق وإتمام شراء",
+            "دمج بوابات الدفع",
+            "لوحة تحكم الطلبات",
+            "تتبع المخزون",
+            "تحسين محركات البحث لصفحات المنتجات",
+            "تسليم خلال 14 يوم",
+          ],
+          cta: "تواصل معنا",
+        },
+      ],
     },
   },
 } as const;

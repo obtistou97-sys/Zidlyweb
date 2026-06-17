@@ -1,22 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { ThemeProvider, LanguageProvider } from "./providers";
-
-const themeInitScript = `
-(function () {
-  try {
-    var theme = localStorage.getItem('oussama-portfolio-theme');
-    if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.documentElement.classList.add('dark');
-    }
-    var locale = localStorage.getItem('oussama-portfolio-locale');
-    if (locale === 'ar') {
-      document.documentElement.lang = 'ar';
-      document.documentElement.dir = 'rtl';
-    }
-  } catch (e) {}
-})();
-`;
+import { LanguageProvider } from "./providers";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://zidlyweb.com"),
@@ -66,14 +50,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" dir="ltr" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-      </head>
-      <body className="font-sans bg-white text-[#1E293B] dark:bg-black dark:text-white antialiased transition-colors duration-300">
-        <ThemeProvider>
-          <LanguageProvider>{children}</LanguageProvider>
-        </ThemeProvider>
+    <html lang="en" dir="ltr">
+      <body className="font-sans bg-white text-[#1E293B] antialiased">
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );
