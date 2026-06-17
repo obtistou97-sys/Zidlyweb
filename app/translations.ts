@@ -284,6 +284,7 @@ export const translations = {
           features: [
             "Up to 5 pages",
             "CMS integration (WordPress)",
+            "Custom domain setup",
             "Advanced SEO setup",
             "Social media integration",
             "WhatsApp & contact forms",
@@ -299,6 +300,7 @@ export const translations = {
           features: [
             "Product catalog (unlimited items)",
             "Shopping cart & checkout",
+            "Custom domain setup",
             "Payment gateway integration",
             "Order management dashboard",
             "Inventory tracking",
@@ -593,6 +595,7 @@ export const translations = {
           features: [
             "حتى 5 صفحات",
             "نظام إدارة محتوى (WordPress)",
+            "إعداد نطاق مخصص",
             "تحسين محركات بحث متقدم",
             "دمج وسائل التواصل الاجتماعي",
             "نماذج واتساب وتواصل",
@@ -608,6 +611,7 @@ export const translations = {
           features: [
             "كتالوج منتجات (غير محدود)",
             "سلة تسوق وإتمام شراء",
+            "إعداد نطاق مخصص",
             "دمج بوابات الدفع",
             "لوحة تحكم الطلبات",
             "تتبع المخزون",
