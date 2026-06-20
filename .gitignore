@@ -4,6 +4,11 @@ node_modules/
 *.eps
 *.JPG
 *.jpg
+!.vercel
+.opencode/
+mokup/
+# Allow template images in public/mokups
+!public/mokups/*.jpg
 tmp_*.json
 tokens.json
 opencode.json

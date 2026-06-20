@@ -28,6 +28,7 @@ import { useLanguage } from "./providers";
 import InteractiveShowcase from "./InteractiveShowcase";
 import WebsiteShowcase from "./WebsiteShowcase";
 import AnimatedHeroText from "./AnimatedHeroText";
+import ChatWidget from "./ChatWidget";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -39,9 +40,7 @@ const fadeUp = {
 };
 
 const serviceIcons = [Globe, Code2, ShoppingCart, Search];
-const WHATSAPP_NUMBER = "213558823254";
-const WHATSAPP_LINK = `https://wa.me/${WHATSAPP_NUMBER}`;
-
+const WHATSAPP_LINK = "https://wa.me/213558823254";
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
     <span className="inline-flex items-center gap-2 rounded-sm border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
@@ -73,13 +72,41 @@ function GradientBlob({ className }: { className?: string }) {
   );
 }
 
+// --- HERO TEMPLET START ---
 function HeroImage() {
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const images = [
+    "/mokups/0000299_rosea-theme-for-nopcommerce_570.png",
+    "/mokups/0000588_tulip-theme-for-nopcommerce_570.jpeg",
+    "/mokups/0000624_aureum-theme-for-nopcommerce_570.png",
+    "/mokups/0001999_beauty-shop-theme-for-nopcommerce_570.jpeg",
+    "/mokups/0002600_crimson-theme-for-nopcommerce_570.webp",
+    "/mokups/0003437_car-haven-theme-for-nopcommerce_570.webp",
+    "/mokups/0003439_lily-theme-for-nopcommerce_570.webp",
+    "/mokups/69e8bdd2eaeb4489347585.jpg",
+    "/mokups/6a1927511629f266832714.png",
+    "/mokups/6a1f44ff66186652119391.png",
+    "/mokups/6a1f590a98e81822544016.png",
+    "/mokups/77620554-9ed1-4f68-8268-c1e3c50cfa71-cover.png",
+    "/mokups/9783c440-3bd9-472f-8c58-53e35f7762b0-cover.png",
+    "/mokups/figma-startup-landing-pages-1024x768.jpg",
+    "/mokups/original-078613c08f99d5b48d88868be92d200c.webp",
+    "/mokups/skinsho-footer-thumbnail-MCvP4lI.jpg",
+  ];
+
+  useEffect(() => {
+    if (paused) return;
+    const timer = setInterval(() => setCurrent((p) => (p + 1) % images.length), 4000);
+    return () => clearInterval(timer);
+  }, [paused, images.length]);
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-      className="relative w-full max-w-2xl"
+      className="relative mx-auto w-full max-w-2xl"
     >
       <div className="absolute -inset-6 rounded-sm bg-gradient-to-br from-primary/30 via-primary/10 to-transparent blur-3xl" />
       <div className="relative overflow-hidden rounded-sm border border-slate-200 dark:border-white/5 bg-white shadow-xl shadow-black/5 dark:bg-surface dark:shadow-2xl dark:shadow-black/40">
@@ -94,48 +121,38 @@ function HeroImage() {
           </div>
         </div>
 
-        <div className="space-y-6 p-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-sm bg-primary">
-                <Code2 className="h-5 w-5 text-white" />
-              </div>
-              <div className="h-3 w-24 rounded-sm bg-slate-300 dark:bg-white/10" />
-            </div>
-            <div className="flex gap-4">
-              <div className="h-2.5 w-14 rounded-sm bg-slate-200 dark:bg-white/5" />
-              <div className="h-2.5 w-14 rounded-sm bg-slate-200 dark:bg-white/5" />
-              <div className="h-2.5 w-14 rounded-sm bg-slate-200 dark:bg-white/5" />
-            </div>
-          </div>
+        <div className="relative aspect-[4/3] w-full overflow-hidden">
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={current}
+              src={images[current]}
+              alt={`Template ${current + 1}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="h-full w-full object-cover"
+            />
+          </AnimatePresence>
+        </div>
 
-          <div className="grid grid-cols-5 gap-8 pt-4">
-            <div className="col-span-3 space-y-4">
-              <div className="h-3 w-16 rounded-sm bg-primary/20" />
-              <div className="h-5 w-full rounded-sm bg-gradient-to-r from-slate-600 to-slate-300 dark:from-white dark:to-white/40" />
-              <div className="h-5 w-3/4 rounded-sm bg-gradient-to-r from-slate-600 to-slate-300 dark:from-white dark:to-white/40" />
-              <div className="h-3 w-full rounded-sm bg-slate-200 dark:bg-white/5" />
-              <div className="flex gap-3 pt-2">
-                <div className="h-10 w-32 rounded-sm bg-primary" />
-                <div className="h-10 w-32 rounded-sm border border-slate-300 dark:border-white/10" />
-              </div>
-            </div>
-            <div className="col-span-2 aspect-[3/4] rounded-sm border border-slate-200 dark:border-white/5 bg-gradient-to-br from-slate-100 to-slate-50 dark:from-white/5 dark:to-white/[0.02]" />
-          </div>
-
-          <div className="grid grid-cols-4 gap-4">
-            {[0, 1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="aspect-[4/3] rounded-sm border border-slate-200 dark:border-white/5 bg-gradient-to-br from-slate-100 to-slate-50 dark:from-white/5 dark:to-white/[0.02]"
-              />
-            ))}
-          </div>
+        <div className="flex items-center justify-center gap-2 pb-4 pt-2">
+          {images.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => { setCurrent(i); setPaused(true); }}
+              className={`h-2 rounded-full transition-all ${
+                i === current ? "w-6 bg-primary" : "w-2 bg-slate-300 dark:bg-white/20"
+              }`}
+              aria-label={`Go to template ${i + 1}`}
+            />
+          ))}
         </div>
       </div>
     </motion.div>
   );
 }
+// --- HERO TEMPLET END ---
 
 function LanguageToggle({ light }: { light?: boolean }) {
   const { locale, toggleLanguage } = useLanguage();
@@ -150,24 +167,6 @@ function LanguageToggle({ light }: { light?: boolean }) {
       <Languages className="h-4 w-4" />
       {locale === "en" ? "العربية" : "English"}
     </button>
-  );
-}
-
-function WhatsAppButton() {
-  const { dir } = useLanguage();
-  return (
-    <motion.a
-      initial={{ opacity: 0, scale: 0 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.4, delay: 2 }}
-      href={WHATSAPP_LINK}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-sm bg-[#25D366] text-white shadow-lg transition-all hover:scale-110 hover:shadow-xl rtl:right-auto rtl:left-6"
-      aria-label={dir === "rtl" ? "تواصل معنا" : "Contact us"}
-    >
-      <MessageCircle className="h-7 w-7" />
-    </motion.a>
   );
 }
 
@@ -492,6 +491,12 @@ export default function Home() {
               </motion.div>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-6 py-16 lg:px-12">
+        <div className="mx-auto max-w-2xl">
+          <HeroImage />
         </div>
       </section>
 
@@ -849,13 +854,14 @@ export default function Home() {
                 >
                   Oussama Tistou
                 </a>
+
               </p>
             </div>
           </div>
         </motion.footer>
       </section>
 
-      <WhatsAppButton />
+      <ChatWidget />
     </motion.main>
   );
 }
