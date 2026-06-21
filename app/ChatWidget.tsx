@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Loader2, CheckCircle2 } from "lucide-react";
 import { useLanguage } from "./providers";
@@ -13,7 +13,7 @@ type Message = {
 const STORAGE_KEY = "zidlyweb-chat";
 const EMAIL_RE = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/;
 
-const playSound = useCallback((type: "open" | "message") => {
+function playSound(type: "open" | "message") {
   try {
     const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
     const osc = ctx.createOscillator();
@@ -38,7 +38,7 @@ const playSound = useCallback((type: "open" | "message") => {
       osc.stop(now + 0.2);
     }
   } catch {}
-}, []);
+}
 
 export default function ChatWidget() {
   const { locale } = useLanguage();
