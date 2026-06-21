@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Loader2, CheckCircle2 } from "lucide-react";
 import { useLanguage } from "./providers";
@@ -13,6 +13,33 @@ type Message = {
 const STORAGE_KEY = "zidlyweb-chat";
 const EMAIL_RE = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/;
 
+const playSound = useCallback((type: "open" | "message") => {
+  try {
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    const now = ctx.currentTime;
+    if (type === "open") {
+      osc.frequency.setValueAtTime(600, now);
+      osc.frequency.exponentialRampToValueAtTime(900, now + 0.1);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+      osc.start(now);
+      osc.stop(now + 0.15);
+    } else {
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(800, now);
+      osc.frequency.setValueAtTime(1000, now + 0.08);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+      osc.start(now);
+      osc.stop(now + 0.2);
+    }
+  } catch {}
+}, []);
+
 export default function ChatWidget() {
   const { locale } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
@@ -20,6 +47,7 @@ export default function ChatWidget() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [leadSent, setLeadSent] = useState(false);
+  const [notification, setNotification] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -52,6 +80,7 @@ export default function ChatWidget() {
 
   const handleOpen = () => {
     setIsOpen(true);
+    playSound("open");
     if (messages.length === 0) {
       const greeting: Message = {
         role: "assistant",
@@ -124,6 +153,11 @@ export default function ChatWidget() {
 
       const reply: Message = { role: "assistant", content: replyText };
       setMessages((prev) => [...prev, reply]);
+      playSound("message");
+      if (!isOpen) {
+        setNotification(replyText.slice(0, 80) + (replyText.length > 80 ? "…" : ""));
+        setTimeout(() => setNotification(null), 4000);
+      }
     } catch {
       const errorMsg: Message = {
         role: "assistant",
@@ -144,6 +178,21 @@ export default function ChatWidget() {
 
   return (
     <>
+      <AnimatePresence>
+        {notification && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            onClick={() => { setNotification(null); handleOpen(); }}
+            className="fixed bottom-24 left-6 z-50 max-w-[260px] cursor-pointer rounded-2xl bg-[#CC3366] p-3 text-sm text-white shadow-lg"
+          >
+            <p className="font-semibold">Zidly</p>
+            <p className="mt-0.5 text-xs text-white/80">{notification}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {!isOpen && (
           <motion.button
