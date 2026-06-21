@@ -7,8 +7,10 @@ node_modules/
 !.vercel
 .opencode/
 mokup/
-# Allow template images in public/mokups
+# Allow template images in public
 !public/mokups/*.jpg
+!public/*.jpg
+!public/*.JPG
 tmp_*.json
 tokens.json
 opencode.json
