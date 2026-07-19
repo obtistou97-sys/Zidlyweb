@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
     await transporter.sendMail({
       from: process.env.SMTP_EMAIL,
-      to: "brahimioussama446@gmail.com",
+      to: "hello@zidlyweb.site",
       subject: `New Lead from ${name}`,
       html,
     });

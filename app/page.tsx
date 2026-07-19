@@ -680,7 +680,7 @@ export default function Home() {
 
               <div className="mt-8 space-y-4">
                 <a
-                  href="https://mail.google.com/mail/?view=cm&fs=1&to=brahimioussama446@gmail.com"
+                  href="https://mail.google.com/mail/?view=cm&fs=1&to=hello@zidlyweb.site"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 rounded-sm border border-white/10 bg-transparent p-4 transition-colors hover:border-primary/30"
@@ -690,7 +690,7 @@ export default function Home() {
                   </span>
                   <div>
                     <p className="text-xs font-medium text-white/60">{t.contact.emailLabel}</p>
-                    <p className="text-sm font-semibold text-white" dir="ltr">brahimioussama446@gmail.com</p>
+                    <p className="text-sm font-semibold text-white" dir="ltr">hello@zidlyweb.site</p>
                   </div>
                 </a>
 

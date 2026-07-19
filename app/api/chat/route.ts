@@ -30,7 +30,7 @@ FAQ:
 
 CONTACT:
 - WhatsApp: +213 558 82 32 54
-- Email: brahimioussama446@gmail.com
+- Email: hello@zidlyweb.site
 - Location: Algeria
 
 RULES:
