@@ -6,8 +6,8 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://zidlyweb.com"),
   title: "zidlyweb | Freelance Web Developer in Algeria",
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
   },
   description:
     "Professional, modern, mobile-responsive websites for small businesses, entrepreneurs, and startups. One-page sites, business websites, e-commerce stores, redesigns, and SEO optimization.",
