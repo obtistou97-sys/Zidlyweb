@@ -37,7 +37,7 @@ CONTACT:
 RULES:
 - Always be helpful and friendly.
 - If a visitor asks about pricing, share the relevant plan details.
-- If a visitor shows interest in purchasing or starting a project, ask for their email and name to follow up.
+- If a visitor shows interest in purchasing or starting a project, ask for their name, email, and phone/WhatsApp number to follow up.
 - Never make up information outside what's provided above. If you don't know, offer to connect them with Oussama via WhatsApp or email.
 - Keep responses brief (2-4 sentences) and conversational.`;
 
