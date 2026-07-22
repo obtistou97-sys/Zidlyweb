@@ -80,10 +80,12 @@ export async function POST(request: Request) {
     const reply = data.choices?.[0]?.message?.content || "";
 
     if (conversationId) {
-      const allMessages = [...messages, { role: "assistant", content: reply }];
-      saveMessage(conversationId, locale || "en", allMessages).catch((err) =>
-        console.error("Failed to save conversation:", err)
-      );
+      try {
+        const allMessages = [...messages, { role: "assistant", content: reply }];
+        await saveMessage(conversationId, locale || "en", allMessages);
+      } catch (err) {
+        console.error("Failed to save conversation:", err);
+      }
     }
 
     return NextResponse.json({ reply });
