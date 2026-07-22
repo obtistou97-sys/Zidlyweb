@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { saveMessage } from "@/lib/conversations";
 
 const SYSTEM_PROMPT = `You are Zidly, an AI sales assistant for Zidlyweb, a freelance web development service based in Algeria. Your role is to answer questions, qualify leads, and collect contact information when visitors show interest. Be friendly, professional, and concise. Respond in the same language the visitor uses (English or Arabic).
 
@@ -44,7 +45,7 @@ const MODEL = process.env.OPENROUTER_MODEL || "openai/gpt-4o-mini";
 
 export async function POST(request: Request) {
   try {
-    const { messages, locale } = await request.json();
+    const { messages, locale, conversationId } = await request.json();
 
     if (!messages || !Array.isArray(messages)) {
       return NextResponse.json({ error: "Invalid messages" }, { status: 400 });
@@ -77,6 +78,13 @@ export async function POST(request: Request) {
 
     const data = await response.json();
     const reply = data.choices?.[0]?.message?.content || "";
+
+    if (conversationId) {
+      const allMessages = [...messages, { role: "assistant", content: reply }];
+      saveMessage(conversationId, locale || "en", allMessages).catch((err) =>
+        console.error("Failed to save conversation:", err)
+      );
+    }
 
     return NextResponse.json({ reply });
   } catch (error) {

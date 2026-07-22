@@ -13,6 +13,16 @@ type Message = {
 const STORAGE_KEY = "zidlyweb-chat";
 const EMAIL_RE = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/;
 
+function getConversationId(locale: string): string {
+  const key = `zidlyweb-conv-id-${locale}`;
+  let id = sessionStorage.getItem(key);
+  if (!id) {
+    id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    sessionStorage.setItem(key, id);
+  }
+  return id;
+}
+
 function playSound(type: "open" | "message") {
   try {
     const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -138,6 +148,7 @@ export default function ChatWidget() {
         body: JSON.stringify({
           messages: updated.map((m) => ({ role: m.role, content: m.content })),
           locale,
+          conversationId: getConversationId(locale),
         }),
       });
 
