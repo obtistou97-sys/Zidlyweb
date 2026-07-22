@@ -5,8 +5,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Lock, LogOut, Trash2, Download, MessageSquare, Users, ChevronDown, ChevronRight, RefreshCw } from "lucide-react";
 
 type Lead = {
+  id: string;
   name: string;
   email: string;
+  phone: string;
   details: string;
   capturedAt: string;
 };
@@ -35,6 +37,7 @@ export default function AdminPage() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(false);
   const [convLoading, setConvLoading] = useState(false);
+  const [leadLoading, setLeadLoading] = useState(false);
   const [error, setError] = useState("");
   const [expandedConv, setExpandedConv] = useState<string | null>(null);
 
@@ -46,19 +49,26 @@ export default function AdminPage() {
     }
   }, []);
 
-  const loadLeads = () => {
+  const getAuthHeaders = () => ({
+    Authorization: `Bearer ${sessionStorage.getItem("zidlyweb-admin-pw") || ""}`,
+  });
+
+  const loadLeads = async () => {
+    setLeadLoading(true);
     try {
-      const stored = JSON.parse(localStorage.getItem("zidlyweb-leads") || "[]");
-      setLeads(stored);
+      const res = await fetch("/api/leads", { headers: getAuthHeaders() });
+      if (res.ok) {
+        const data = await res.json();
+        setLeads(data.leads || []);
+      }
     } catch {}
+    setLeadLoading(false);
   };
 
   const loadConversations = async () => {
     setConvLoading(true);
     try {
-      const res = await fetch("/api/conversations", {
-        headers: { Authorization: `Bearer ${password || sessionStorage.getItem("zidlyweb-admin-pw") || ""}` },
-      });
+      const res = await fetch("/api/conversations", { headers: getAuthHeaders() });
       if (res.ok) {
         const data = await res.json();
         setConversations(data.conversations || []);
@@ -101,34 +111,37 @@ export default function AdminPage() {
     sessionStorage.removeItem("zidlyweb-admin-pw");
   };
 
-  const clearLeads = () => {
-    localStorage.removeItem("zidlyweb-leads");
-    setLeads([]);
+  const clearLeads = async () => {
+    try {
+      await fetch("/api/leads", { method: "DELETE", headers: getAuthHeaders() });
+      setLeads([]);
+    } catch {}
+  };
+
+  const deleteLead = async (id: string) => {
+    try {
+      await fetch(`/api/leads?id=${id}`, { method: "DELETE", headers: getAuthHeaders() });
+      setLeads((prev) => prev.filter((l) => l.id !== id));
+    } catch {}
   };
 
   const deleteConversation = async (id: string) => {
     try {
-      await fetch(`/api/conversations?id=${id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${sessionStorage.getItem("zidlyweb-admin-pw") || ""}` },
-      });
+      await fetch(`/api/conversations?id=${id}`, { method: "DELETE", headers: getAuthHeaders() });
       setConversations((prev) => prev.filter((c) => c.id !== id));
     } catch {}
   };
 
   const clearConversations = async () => {
     try {
-      await fetch("/api/conversations", {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${sessionStorage.getItem("zidlyweb-admin-pw") || ""}` },
-      });
+      await fetch("/api/conversations", { method: "DELETE", headers: getAuthHeaders() });
       setConversations([]);
     } catch {}
   };
 
   const exportLeads = () => {
-    const csv = [["Name", "Email", "Date", "Details"].join(",")]
-      .concat(leads.map((l) => [l.name, l.email, l.capturedAt, `"${l.details.replace(/"/g, '""')}"`].join(",")))
+    const csv = [["Name", "Email", "Phone", "Date", "Details"].join(",")]
+      .concat(leads.map((l) => [l.name, l.email, l.phone, l.capturedAt, `"${l.details.replace(/"/g, '""')}"`].join(",")))
       .join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
@@ -198,6 +211,9 @@ export default function AdminPage() {
           <div className="flex gap-2">
             {tab === "leads" ? (
               <>
+                <button onClick={loadLeads} disabled={leadLoading} className="flex items-center gap-1.5 rounded-[50px] bg-white/10 px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-white/20 disabled:opacity-30">
+                  <RefreshCw className={`h-3.5 w-3.5 ${leadLoading ? "animate-spin" : ""}`} /> Refresh
+                </button>
                 <button onClick={exportLeads} disabled={leads.length === 0} className="flex items-center gap-1.5 rounded-[50px] bg-white/10 px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-white/20 disabled:opacity-30">
                   <Download className="h-3.5 w-3.5" /> Export
                 </button>
@@ -356,28 +372,42 @@ export default function AdminPage() {
             >
               {leads.length === 0 ? (
                 <div className="rounded-2xl border border-white/5 bg-white/[0.03] p-12 text-center">
-                  <p className="text-sm text-white/30">No leads yet</p>
+                  <p className="text-sm text-white/30">{leadLoading ? "Loading..." : "No leads yet"}</p>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {[...leads].reverse().map((lead, i) => (
+                  {[...leads].reverse().map((lead) => (
                     <motion.div
-                      key={i}
+                      key={lead.id}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.05 }}
                       className="rounded-2xl border border-white/5 bg-white/[0.03] p-4"
                     >
                       <div className="flex items-start justify-between">
                         <div>
                           <h3 className="font-semibold text-white">{lead.name}</h3>
-                          <a href={`mailto:${lead.email}`} className="text-sm text-[#CC3366] hover:underline">
-                            {lead.email}
-                          </a>
+                          {lead.email && (
+                            <a href={`mailto:${lead.email}`} className="text-sm text-[#CC3366] hover:underline">
+                              {lead.email}
+                            </a>
+                          )}
+                          {lead.phone && (
+                            <a href={`https://wa.me/${lead.phone.replace(/[^0-9]/g, "")}`} target="_blank" rel="noopener noreferrer" className="mt-0.5 block text-sm text-green-400 hover:underline">
+                              {lead.phone}
+                            </a>
+                          )}
                         </div>
-                        <span className="shrink-0 text-xs text-white/30">
-                          {new Date(lead.capturedAt).toLocaleDateString()} {new Date(lead.capturedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="shrink-0 text-xs text-white/30">
+                            {new Date(lead.capturedAt).toLocaleDateString()} {new Date(lead.capturedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                          </span>
+                          <button
+                            onClick={() => deleteLead(lead.id)}
+                            className="shrink-0 rounded-full p-1.5 text-white/20 transition-colors hover:bg-red-500/20 hover:text-red-400"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
                       </div>
                       {lead.details && (
                         <details className="mt-2">

@@ -89,3 +89,58 @@ export async function clearAllConversations(): Promise<void> {
   }
   await kv.del(INDEX_KEY);
 }
+
+const LEAD_PREFIX = "lead:";
+const LEAD_INDEX_KEY = "lead:index";
+
+export type Lead = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  details: string;
+  capturedAt: string;
+};
+
+export async function saveLead(lead: Omit<Lead, "id">): Promise<void> {
+  const kv = getKV();
+  const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const fullLead: Lead = { ...lead, id };
+
+  await kv.set(`${LEAD_PREFIX}${id}`, fullLead, { ex: 60 * 60 * 24 * 365 });
+
+  const index = (await kv.get<string[]>(LEAD_INDEX_KEY)) || [];
+  index.push(id);
+  await kv.set(LEAD_INDEX_KEY, index, { ex: 60 * 60 * 24 * 365 });
+}
+
+export async function getAllLeads(): Promise<Lead[]> {
+  const kv = getKV();
+  const index = (await kv.get<string[]>(LEAD_INDEX_KEY)) || [];
+  if (index.length === 0) return [];
+
+  const leads = await Promise.all(index.map((id) => kv.get<Lead>(`${LEAD_PREFIX}${id}`)));
+  return leads
+    .filter((l): l is Lead => l !== null)
+    .sort((a, b) => new Date(b.capturedAt).getTime() - new Date(a.capturedAt).getTime());
+}
+
+export async function deleteLead(id: string): Promise<void> {
+  const kv = getKV();
+  await kv.del(`${LEAD_PREFIX}${id}`);
+  const index = (await kv.get<string[]>(LEAD_INDEX_KEY)) || [];
+  await kv.set(
+    LEAD_INDEX_KEY,
+    index.filter((i) => i !== id),
+    { ex: 60 * 60 * 24 * 365 }
+  );
+}
+
+export async function clearAllLeads(): Promise<void> {
+  const kv = getKV();
+  const index = (await kv.get<string[]>(LEAD_INDEX_KEY)) || [];
+  if (index.length > 0) {
+    await Promise.all(index.map((id) => kv.del(`${LEAD_PREFIX}${id}`)));
+  }
+  await kv.del(LEAD_INDEX_KEY);
+}

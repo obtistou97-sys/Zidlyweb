@@ -108,12 +108,24 @@ export default function ChatWidget() {
       .map((m) => m.content.match(/my name is (\w+)/i))
       .find(Boolean);
     const name = nameMatch?.[1] || "Chat Lead";
-    const lead = { name, email, details: allText, capturedAt: new Date().toISOString() };
+    const phoneMatch = messages
+      .map((m) => m.content.match(/(\+?\d[\d\s\-]{7,}\d)/))
+      .find(Boolean);
+    const phone = phoneMatch?.[1] || "";
+    const lead = { name, email, phone, details: allText, capturedAt: new Date().toISOString() };
 
     try {
       const stored = JSON.parse(localStorage.getItem("zidlyweb-leads") || "[]");
       stored.push(lead);
       localStorage.setItem("zidlyweb-leads", JSON.stringify(stored));
+    } catch {}
+
+    try {
+      await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(lead),
+      });
     } catch {}
 
     try {
