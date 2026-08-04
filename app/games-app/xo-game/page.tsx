@@ -183,7 +183,9 @@ export default function XOGame() {
       <h1 style={{ fontSize: 30, fontWeight: 700, color: '#fff', letterSpacing: 2 }}>
         <span style={{ color: '#3b82f6' }}>X</span> O <span style={{ color: '#ef4444' }}>Game</span>
       </h1>
-      <p style={{ fontSize: 13, color: '#94a3b8', marginTop: 4 }}>Facebook Group Edition</p>
+      <p style={{ fontSize: 13, color: '#94a3b8', marginTop: 4 }}>
+  Facebook Group Edition · <a href="https://zidlyweb.site" target="_blank" style={{ color: '#3b82f6', textDecoration: 'none', fontWeight: 500 }}>ZidlyWeb.site</a>
+  </p>
     </div>
   );
 
