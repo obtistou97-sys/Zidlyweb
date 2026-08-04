@@ -64,15 +64,27 @@ export default function XOGame() {
     if (code) setJoinCode(code.toUpperCase());
   }, []);
 
-  // Realtime subscription
+  // Realtime subscription + polling fallback
   useEffect(() => {
     if (!room) return;
+
+    // Realtime
     const channel = supabase
       .channel(`room:${room.id}`)
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'xo_rooms', filter: `id=eq.${room.id}` },
         (payload) => setRoom(payload.new as Room))
       .subscribe();
-    return () => { supabase.removeChannel(channel); };
+
+    // Polling fallback every 2 seconds
+    const interval = setInterval(async () => {
+      const { data } = await supabase.from('xo_rooms').select('*').eq('id', room.id).single();
+      if (data) setRoom(data as Room);
+    }, 2000);
+
+    return () => {
+      supabase.removeChannel(channel);
+      clearInterval(interval);
+    };
   }, [room?.id]);
 
   function confirmName() {
