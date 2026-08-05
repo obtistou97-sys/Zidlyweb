@@ -161,7 +161,7 @@ export default function XOGame() {
   }
 
   function copyLink() {
-    navigator.clipboard.writeText(`https://zidlyweb.site/games-app/xo-game?room=${roomCode}`);
+    navigator.clipboard.writeText(roomCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
@@ -298,7 +298,7 @@ export default function XOGame() {
               <div style={{ fontSize: 12, color: '#64748b', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>Share this code with your opponent</div>
               <div style={{ fontSize: 52, fontWeight: 800, color: '#fff', letterSpacing: 10, marginBottom: 14 }}>{roomCode}</div>
               <button onClick={copyLink} style={{ padding: '10px 28px', borderRadius: 8, border: 'none', background: copied ? '#16a34a' : '#1d4ed8', color: '#fff', fontWeight: 600, cursor: 'pointer', fontSize: 14 }}>
-                {copied ? '✅ Link Copied!' : '🔗 Copy Game Link'}
+               {copied ? '✅ Code Copied!' : '📋 Copy Room Code'}
               </button>
               <div style={{ marginTop: 10, color: '#64748b', fontSize: 13 }}>⏳ Waiting for opponent to join...</div>
             </div>
